@@ -28,12 +28,38 @@
       </li>
     </ul>
     <p class="contact">artefrei@efrei.net</p>
+    <p class="identite">
+      {{ asso.nomOfficiel }} — {{ asso.formeJuridique }} — RNA
+      <ChampAsso :valeur="asso.rna" /><template v-if="asso.siret">
+        — SIRET <ChampAsso :valeur="asso.siret" /></template><br />
+      Siège : <ChampAsso :valeur="asso.adresse.ligne1" />,
+      <template v-if="asso.adresse.ligne2"><ChampAsso :valeur="asso.adresse.ligne2" />, </template>
+      <ChampAsso :valeur="asso.adresse.codePostal" />
+      <ChampAsso :valeur="asso.adresse.ville" />
+    </p>
+    <p class="liens-legaux">
+      <RouterLink to="/association">L'association</RouterLink> ·
+      <RouterLink to="/association#bureau">Le bureau</RouterLink> ·
+      <RouterLink to="/association#mentions-legales">Mentions légales</RouterLink>
+    </p>
     <p class="copyright">
       Copyright &copy; 2024 | Tous droits réservés
       <RouterLink to="/" class="marque">Art'EFREI</RouterLink>
     </p>
   </footer>
 </template>
+
+<script>
+import ChampAsso from "./ChampAsso.vue";
+import asso from "@/data/association";
+
+export default {
+  components: { ChampAsso },
+  data() {
+    return { asso };
+  },
+};
+</script>
 
 <style lang="scss" scoped>
 .footer {
@@ -74,6 +100,22 @@
 .contact {
   margin: 12px 0 0;
   font-size: 15px;
+}
+
+.identite {
+  margin: 14px auto 0;
+  max-width: 720px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.liens-legaux {
+  margin: 8px 0 0;
+  font-size: 14px;
+  a {
+    color: #fff;
+    font-weight: 600;
+  }
 }
 
 .copyright {

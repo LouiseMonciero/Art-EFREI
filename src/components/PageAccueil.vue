@@ -58,6 +58,15 @@
       </div>
     </section>
 
+    <!-- Mission -->
+    <section class="bloc">
+      <h2 class="bloc-titre">Notre mission</h2>
+      <p class="mission">{{ asso.mission }}</p>
+      <RouterLink to="/association" class="lien-asso">
+        En savoir plus sur l'association →
+      </RouterLink>
+    </section>
+
     <!-- Présentation -->
     <section class="bloc">
       <h2 class="bloc-titre">Qui sommes-nous ?</h2>
@@ -157,6 +166,7 @@
 <script>
 import NavBar from "./NavBar.vue";
 import FooTer from "./FooTer.vue";
+import asso from "@/data/association";
 
 const COMBINAISONS = [
   { configuration: 1, roundness: 1 },
@@ -181,6 +191,7 @@ export default {
       minuteurFormes: null,
       // Nombre d'adhérents HelloAsso (null tant qu'il n'est pas chargé)
       adherents: null,
+      asso,
       slides: [
         {
           image: require("@/assets/SFA.jpg"),
@@ -537,6 +548,29 @@ mark {
   max-width: 75ch;
   p {
     margin: 0 0 16px;
+  }
+}
+
+/* Mission */
+.mission {
+  font-size: clamp(18px, 2vw, 22px);
+  line-height: 1.6;
+  max-width: 75ch;
+  margin: 0;
+  padding: 18px 22px;
+  border-radius: 16px;
+  background: #fffbcc;
+  border-left: 4px solid var(--jaune);
+}
+
+.lien-asso {
+  display: inline-block;
+  margin-top: 14px;
+  font-weight: 600;
+  color: var(--magenta);
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
   }
 }
 

@@ -1,6 +1,9 @@
 <template>
   <NavBar></NavBar>
   <h1 class="page-titre">Notre <span>histoire</span></h1>
+  <p class="page-sous-titre">
+    <RouterLink to="/association#bureau" class="lien-bureau">Découvrir le bureau actuel →</RouterLink>
+  </p>
   <div class="historique">
     <section class="timeline">
       <ul>
@@ -323,6 +326,15 @@ export default {
   
 <style lang="scss" scoped>
 $carte: 380px;
+
+.lien-bureau {
+  color: var(--magenta);
+  font-weight: 600;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}
 $ecart: 40px;
 
 .historique {

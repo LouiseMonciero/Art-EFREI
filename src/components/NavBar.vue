@@ -25,6 +25,7 @@
           <li><RouterLink to="/" class="lien" @click="fermerMenu">Accueil</RouterLink></li>
           <li><RouterLink to="/gallerie" class="lien" @click="fermerMenu">Galerie</RouterLink></li>
           <li><RouterLink to="/history" class="lien" @click="fermerMenu">Historique</RouterLink></li>
+          <li><RouterLink to="/association" class="lien" @click="fermerMenu">L'association</RouterLink></li>
           <li>
             <RouterLink to="/paint" class="lien lien-atelier" @click="fermerMenu">
               🎨 Peins toi-même !
@@ -224,7 +225,7 @@ export default {
     background: #fff;
     transition: max-height 0.35s ease, visibility 0.35s;
     &.ouvert {
-      max-height: 340px;
+      max-height: 420px;
       visibility: visible;
       border-top: 1px solid #eee;
     }
