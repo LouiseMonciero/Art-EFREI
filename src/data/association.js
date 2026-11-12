@@ -42,14 +42,14 @@ export default {
   ],
 
   // --- Bureau actuel (AUCUN e-mail personnel) ---
-  // photo : facultative, ex. require("@/assets/bureau/prenom.jpg") ; sinon initiales.
+  // photo : facultative, ex. require("@/assets/Prenom2026.jpg") ; null = initiales.
   mandat: "2026-2027",
   bureau: [
-    { role: "Présidente", nom: "Alina Frederic", photo: null },
-    { role: "Vice-présidente", nom: "Morgane Cordier", photo: null },
-    { role: "Trésoriere", nom: "Louise Monciero", photo: null },
+    { role: "Présidente", nom: "Alina Frederic", photo: require("@/assets/Alina2026.jpeg") },
+    { role: "Vice-présidente", nom: "Morgane Cordier", photo: require("@/assets/Morgane2026.png") },
+    { role: "Trésoriere", nom: "Louise Monciero", photo: require("@/assets/Louise2026.png") },
     { role: "Secrétaire", nom: "Clémentine Fleuret", photo: null },
-    { role: "Vice-Secrétaire", nom: "Arnaud Chadal", photo: null },
+    { role: "Vice-Secrétaire", nom: "Arnaud Chadal", photo: require("@/assets/Arnaud2026.jpeg") },
 
   ],
 

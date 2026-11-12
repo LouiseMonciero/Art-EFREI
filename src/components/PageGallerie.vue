@@ -7,19 +7,24 @@
     </p>
 
     <ul class="albums">
-      <li v-for="album in albums" :key="album.lien">
-        <RouterLink :to="album.lien" class="album">
-          <div class="couverture" :class="{ logo: !album.photo }">
-            <img :src="album.couverture" :alt="album.titre" loading="lazy" />
+      <li v-for="album in albums" :key="album.id">
+        <RouterLink :to="'/gallerie/' + album.id" class="album">
+          <div class="couverture" :class="{ logo: !album.couverture }">
+            <img :src="album.couverture || logo" :alt="album.titre" loading="lazy" />
           </div>
           <div class="album-corps">
             <h2>{{ album.titre }}</h2>
             <p>📅 {{ album.dates }}</p>
-            <span class="voir">{{ album.photo ? "Voir l'album →" : "Bientôt disponible" }}</span>
+            <span class="voir">Voir l'album →</span>
           </div>
         </RouterLink>
       </li>
     </ul>
+
+    <p class="droits">
+      Les œuvres appartiennent à leurs auteur·rice·s. Toute reproduction ou
+      réutilisation est interdite sans leur accord écrit.
+    </p>
 
     <FooTer></FooTer>
   </div>
@@ -28,6 +33,7 @@
 <script>
 import NavBar from "./NavBar.vue";
 import FooTer from "./FooTer.vue";
+import albums from "@/data/albums.json";
 
 export default {
   components: {
@@ -35,32 +41,32 @@ export default {
     FooTer,
   },
   data() {
-    const logo = require("@/assets/logo_artefrei.png");
     return {
-      albums: [
-        {
-          lien: "/gallerie/artober-2023-p1",
-          titre: "Art'Ober 2023 – Partie 1",
-          dates: "01/10/2023 ➡ 10/10/2023",
-          couverture: require("@/albums/images_albums/artober2023/ART2023_SOPH_D2.jpg"),
-          photo: true,
-        },
-        {
-          lien: "/gallerie/artober-2023-p2",
-          titre: "Art'Ober 2023 – Partie 2",
-          dates: "11/10/2023 ➡ 20/10/2023",
-          couverture: logo,
-          photo: false,
-        },
-        {
-          lien: "/gallerie/artober-2023-p3",
-          titre: "Art'Ober 2023 – Partie 3",
-          dates: "21/10/2023 ➡ 31/10/2023",
-          couverture: logo,
-          photo: false,
-        },
-      ],
+      logo: require("@/assets/logo_artefrei.png"),
+      manifest: null,
+      albums: albums.albums.map((a) => ({ ...a, couverture: null })),
     };
+  },
+  async mounted() {
+    try {
+      const reponse = await fetch(`${process.env.BASE_URL}images/web/manifest.json`, {
+        cache: "no-store",
+      });
+      if (!reponse.ok) return;
+      const manifest = await reponse.json();
+      // Couverture = première œuvre de l'album
+      this.albums = albums.albums.map((a) => {
+        const premiere = (manifest[a.dossier] || [])[0];
+        return {
+          ...a,
+          couverture: premiere
+            ? `${process.env.BASE_URL}images/web/${a.dossier}/${premiere}`
+            : null,
+        };
+      });
+    } catch (e) {
+      // Sans manifest : cartes avec le logo.
+    }
   },
 };
 </script>
@@ -133,5 +139,14 @@ export default {
 .voir {
   font-weight: 600;
   color: var(--magenta);
+}
+
+.droits {
+  max-width: 800px;
+  margin: 48px auto 0;
+  padding: 0 var(--gouttiere);
+  font-size: 14px;
+  text-align: center;
+  color: var(--texte-doux);
 }
 </style>

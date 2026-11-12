@@ -7,9 +7,7 @@ import PageLoading from "@/components/PageLoading.vue"
 import PagePaint from "@/components/PagePaint.vue"
 import PageAssociation from "@/components/PageAssociation.vue"
 
-import PageArtober2023_P1 from "@/albums/PageArtober2023_P1.vue"
-import PageArtober2023_P2 from "@/albums/PageArtober2023_P2.vue"
-import PageArtober2023_P3 from "@/albums/PageArtober2023_P3.vue"
+import PageAlbum from "@/components/PageAlbum.vue"
 
 const routes = [
   {
@@ -48,19 +46,10 @@ const routes = [
     component: PageGallerie,
   },
   {
-    path: '/gallerie/artober-2023-p1',
-    name: "artober-2023-p1",
-    component: PageArtober2023_P1,
-  },
-  {
-    path: '/gallerie/artober-2023-p2',
-    name: "artober-2023-p2",
-    component: PageArtober2023_P2,
-  },
-  {
-    path: '/gallerie/artober-2023-p3',
-    name: "artober-2023-p3",
-    component: PageArtober2023_P3,
+    path: '/gallerie/:id',
+    name: "album",
+    component: PageAlbum,
+    props: true,
   },
 ]
 

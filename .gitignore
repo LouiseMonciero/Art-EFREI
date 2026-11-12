@@ -10,6 +10,7 @@ node_modules
 
 # Généré par scripts/helloasso-adherents.js
 /public/adherents.json
+/public/images/web/
 
 # Log files
 npm-debug.log*

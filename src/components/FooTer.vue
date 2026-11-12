@@ -40,7 +40,8 @@
     <p class="liens-legaux">
       <RouterLink to="/association">L'association</RouterLink> ·
       <RouterLink to="/association#bureau">Le bureau</RouterLink> ·
-      <RouterLink to="/association#mentions-legales">Mentions légales</RouterLink>
+      <RouterLink to="/association#mentions-legales">Mentions légales</RouterLink> ·
+      <RouterLink to="/association#politique-conf">Politiques de confidentialités</RouterLink>
     </p>
     <p class="copyright">
       Copyright &copy; 2024 | Tous droits réservés

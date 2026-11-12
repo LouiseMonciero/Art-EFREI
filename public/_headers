@@ -1,0 +1,7 @@
+# Netlify et Cloudflare Pages : en-têtes appliqués aux images des œuvres.
+# CORP "same-origin" : les navigateurs refusent d'afficher ces images sur un autre site
+# (anti-hotlinking). Ne protège pas contre une copie directe, mais coupe l'usage en direct.
+/images/*
+  Cross-Origin-Resource-Policy: same-origin
+  X-Robots-Tag: noimageindex, noai
+  Cache-Control: public, max-age=31536000, immutable

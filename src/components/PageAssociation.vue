@@ -74,12 +74,18 @@
 
       <h3 class="sous-titre">Propriété intellectuelle</h3>
       <p>
-        Les œuvres présentées dans la galerie restent la propriété de leurs
-        auteurs respectifs et ne peuvent être reproduites sans leur accord. Les
-        autres contenus du site (textes, logos, photos) appartiennent à
+        Les œuvres présentées dans la galerie sont protégées par le droit
+        d'auteur : elles restent la propriété de leurs auteur·rice·s, qui ont
+        donné leur accord pour leur publication. Toute reproduction, copie ou
+        réutilisation, y compris pour l'entraînement d'intelligences
+        artificielles, est interdite sans leur accord écrit. Les autres contenus
+        du site (textes, logos, photos de l'association) appartiennent à
         {{ asso.nomOfficiel }}.
       </p>
-
+    </section>
+    
+    <section id="politique-conf" class="bloc legal">
+      <h2 class="bloc-titre">Politique de confidentialités</h2>
       <h3 class="sous-titre">Données personnelles et cookies</h3>
       <p>
         Ce site ne dépose aucun cookie et ne collecte aucune donnée personnelle

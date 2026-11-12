@@ -41,6 +41,11 @@
       <button class="v-nav v-suiv" aria-label="Œuvre suivante" @click="deplacer(1)">›</button>
     </div>
 
+    <p class="droits">
+      Les œuvres appartiennent à leurs auteur·rice·s. Toute reproduction ou
+      réutilisation est interdite sans leur accord écrit.
+    </p>
+
     <FooTer></FooTer>
   </div>
 </template>
@@ -118,6 +123,15 @@ export default {
   &:hover {
     color: var(--magenta);
   }
+}
+
+.droits {
+  max-width: 800px;
+  margin: 56px auto 0;
+  padding: 0 var(--gouttiere);
+  font-size: 14px;
+  text-align: center;
+  color: var(--texte-doux);
 }
 
 .travaux {
