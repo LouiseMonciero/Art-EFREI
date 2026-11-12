@@ -1,303 +1,255 @@
 <template>
   <div>
-    <div class="nav-menu">
-      <div class="nav-content" :style="{ height: navMenuHeight }">
-        <div class="logo" :style="{ marginTop: logoMarginTop }">
-          <RouterLink to="/"
-            ><img src="@/assets/logo_artefrei.png" href="/" alt="Logo"
-          /></RouterLink>
-          <div class="logo_text">
-            <img src="@/assets/artefreiBlack.png" alt="Logo_text" />
-          </div>
-        </div>
-        <ul class="nav-items">
-          <li><RouterLink to="/" class="a">Accueil</RouterLink></li>
-          <li><RouterLink to="/gallerie" class="a">Gallerie</RouterLink></li>
-          <li><RouterLink to="/history" class="a">Historique</RouterLink></li>
+    <header class="nav-menu" :class="{ ouvert: menuOuvert }">
+      <div class="nav-content">
+        <RouterLink to="/" class="logo" aria-label="Art'EFREI – Accueil">
+          <img src="@/assets/logo_artefrei.png" alt="Logo Art'EFREI" class="logo-img" />
+          <img src="@/assets/artefreiBlack.png" alt="Art'EFREI" class="logo-texte" />
+        </RouterLink>
+
+        <button
+          class="burger"
+          :class="{ actif: menuOuvert }"
+          :aria-expanded="menuOuvert ? 'true' : 'false'"
+          aria-controls="menu-principal"
+          :aria-label="menuOuvert ? 'Fermer le menu' : 'Ouvrir le menu'"
+          @click="basculerMenu"
+        >
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+
+      <!-- Ordinateur : panneau latéral / Tablette & téléphone : menu déroulant depuis le haut -->
+      <nav id="menu-principal" class="panneau" :class="{ ouvert: menuOuvert }">
+        <ul>
+          <li><RouterLink to="/" class="lien" @click="fermerMenu">Accueil</RouterLink></li>
+          <li><RouterLink to="/gallerie" class="lien" @click="fermerMenu">Galerie</RouterLink></li>
+          <li><RouterLink to="/history" class="lien" @click="fermerMenu">Historique</RouterLink></li>
           <li>
-            <RouterLink to="/paint" class="DIY"
-              ><img src="@/assets/DIY.png" alt="DIY"
-            /></RouterLink>
+            <RouterLink to="/paint" class="lien lien-atelier" @click="fermerMenu">
+              🎨 Peins toi-même !
+            </RouterLink>
           </li>
         </ul>
-        <div class="navbar-responsive">
-          <ul class="navbar-responsive__nav">
-            <li><RouterLink to="/" class="a2">Accueil</RouterLink></li>
-            <li><RouterLink to="/gallerie" class="a2">Gallerie</RouterLink></li>
-            <li><RouterLink to="/history" class="a2">Historique</RouterLink></li>
-            <li>
-              <RouterLink to="/paint" class="DIY2"
-                ><img src="@/assets/DIY.png" alt="DIY2"
-              /></RouterLink>
-            </li>
-          </ul>
-        </div>
-        <div class="menu_icon" :style="{ marginTop: menuIconMarginTop }" :class="{ active: isResponsiveNavbarVisible }">
-          <img
-            :src="menuIconImage"
-            @click="toggleResponsiveNavbar()"
-            alt="menu_icon"
-          />
-        </div>
-      </div>
-    </div>
+      </nav>
+    </header>
+
+    <div class="voile" :class="{ ouvert: menuOuvert }" @click="fermerMenu"></div>
+
+    <!-- Réserve la hauteur de la barre fixe pour que le contenu ne passe pas dessous -->
+    <div class="nav-espace" aria-hidden="true"></div>
   </div>
 </template>
-    
-  <script>
+
+<script>
 export default {
   data() {
     return {
-      navMenuHeight: "150px", // Définissez la hauteur de base de nav-menu
-      isResponsiveNavbarVisible: false, // Nouvelle propriété pour indiquer si la navbar-responsive est visible
+      menuOuvert: false,
     };
   },
   methods: {
-    toggleResponsiveNavbar() {
-      const navbarResponsive = document.querySelector(".navbar-responsive");
-      if (navbarResponsive.style.display === "flex") {
-        navbarResponsive.style.display = "none";
-        this.navMenuHeight = "150px";
-        this.isResponsiveNavbarVisible = false; // Met à jour la propriété
-      } else {
-        navbarResponsive.style.display = "flex";
-        this.navMenuHeight = "500px";
-        this.isResponsiveNavbarVisible = true; // Met à jour la propriété
-      }
+    basculerMenu() {
+      this.menuOuvert = !this.menuOuvert;
+    },
+    fermerMenu() {
+      this.menuOuvert = false;
+    },
+    surTouche(e) {
+      if (e.key === "Escape") this.fermerMenu();
     },
   },
-  computed: {
-    menuIconImage() {
-      // Retourne le chemin de l'image en fonction de l'état de la navbar-responsive
-      return this.isResponsiveNavbarVisible
-        ? require("@/assets/menu_icon2.png")
-        : require("@/assets/menu_icon.png");
-    },
-    logoMarginTop() {
-      // Calcule la marge supérieure du logo en fonction de l'état de la navbar-responsive
-      return this.isResponsiveNavbarVisible && this.navMenuHeight !== "150px"
-        ? "-350px"
-        : "0px"; // Changez "20px" selon votre mise en page
-    },
-    menuIconMarginTop() {
-      // Calcule la marge supérieure du bouton menu_icon en fonction de l'état de la navbar-responsive
-      return this.isResponsiveNavbarVisible && this.navMenuHeight !== "150px"
-        ? "-350px"
-        : "0px"; // Changez "20px" selon votre mise en page
-    },
+  mounted() {
+    window.addEventListener("keydown", this.surTouche);
+  },
+  beforeUnmount() {
+    window.removeEventListener("keydown", this.surTouche);
   },
 };
 </script>
-  
-  <style lang="scss" scoped>
-@font-face {
-  font-family: "BebasNeue";
-  src: url("@/assets/BebasNeue-Regular.woff2") format("woff2"),
-    url("@/assets/BebasNeue-Regular.ttf") format("truetype");
+
+<style lang="scss" scoped>
+.nav-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10000;
+  background: #fff;
+  box-shadow: 0 2px 14px rgba(1, 1, 1, 0.12);
 }
 
-@font-face {
-  font-family: "Amarillo";
-  src: url("@/assets/Amarillo.ttf") format("truetype");
+.nav-content {
+  position: relative;
+  z-index: 2;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--gouttiere);
+  background: #fff;
 }
 
-//Navbar starts
-
-.navbar-responsive {
-  display: none;
-  transition: height 0.3s ease; /* Ajout de la transition */
-  margin-top: 200px;
-}
-
-.navbar-responsive__nav{
-  list-style: none !important; /* Retirer les puces */
-}
-
-.navbar-responsive .a2{
-  font-family: "BebasNeue", sans-serif;
-  font-size: 40px;
-  padding: 5px 30px;
-  text-decoration: none;
-  color: #000000;
-  transition: font-size 0.3s ease; /* Animation de transition de 0.3s avec une courbe d'accélération */
-  &:hover {
-    font-size: 50px; /* Augmente légèrement la taille du texte au survol */
-  }
-}
-
-.DIY2 {
-  img {
-    width: 300px;
-    transition: transform 0.3s ease; /* Animation de transition de 0.3s avec une courbe d'accélération */
-    &:hover {
-      transform: scale(
-        1.2
-      ); /* Augmente légèrement la taille de l'image au survol */
-    }
-  }
-}
-
-
-.logo_text {
-  transform: scale(1.8);
-  margin-left: 45px;
+.nav-espace {
+  height: var(--nav-h);
 }
 
 .logo {
   display: flex;
   align-items: center;
-  img {
-    width: 100px;
-    height: auto;
-    margin-right: 20px;
-    cursor: pointer;
+  gap: 14px;
+  text-decoration: none;
+  min-width: 0;
+}
+
+.logo-img {
+  height: calc(var(--nav-h) - 20px);
+  width: auto;
+}
+
+.logo-texte {
+  height: 30px;
+  width: auto;
+}
+
+/* Bouton burger (3 traits qui se transforment en croix) */
+.burger {
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 10px;
+  transition: background-color 0.2s ease;
+  &:hover {
+    background-color: #f2f2f2;
   }
   span {
-    align-self: center;
-    font-size: 24px;
-    font-weight: bold;
-    font-family: "Amarillo", sans-serif;
+    display: block;
+    height: 3px;
+    width: 100%;
+    background: var(--texte);
+    border-radius: 3px;
+    transition: transform 0.3s ease, opacity 0.2s ease;
   }
-  h3 {
-    font-family: "BebasNeue", sans-serif;
-    font-size: 40px;
+  &.actif span:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
   }
-}
-
-.DIY {
-  img {
-    margin-top: -7px;
-    width: 400px;
-    transition: transform 0.3s ease; /* Animation de transition de 0.3s avec une courbe d'accélération */
-    &:hover {
-      transform: scale(
-        1.2
-      ); /* Augmente légèrement la taille de l'image au survol */
-    }
+  &.actif span:nth-child(2) {
+    opacity: 0;
+  }
+  &.actif span:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
   }
 }
 
-.nav-menu {
-  background-color: white;
-  position: fixed; /* Fixe la navbar en haut de l'écran */
-  width: 100%; /* Prend toute la largeur de l'écran */
-  z-index: 10000; /* Assure que la navbar reste au-dessus des autres éléments */
-  box-shadow: 0 5px 20px rgba(1, 1, 1, 0.2); /* Ombre de 4 pixels vers le bas */
-  top: 0; /* Pour s'assurer que la navbar est toujours au sommet de la page */
-  margin: 0;
-  padding: 0;
-  left: 0;
-}
-
-.nav-content {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 30px;
-  align-items: center;
-  transition: height 0.3s ease; /* Ajout de la transition */
-}
-
-.nav-items .a {
-  font-family: "BebasNeue", sans-serif;
-  font-size: 40px;
-  padding: 5px 30px;
-  text-decoration: none;
-  color: #000000;
-  transition: font-size 0.3s ease; /* Animation de transition de 0.3s avec une courbe d'accélération */
-  &:hover {
-    font-size: 50px; /* Augmente légèrement la taille du texte au survol */
-  }
-}
-.nav-items {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.panneau ul {
   list-style: none;
   margin: 0;
-  overflow: hidden; /* Assure que l'animation ne dépasse pas du conteneur */
   padding: 0;
-  li {
-    padding: 0 40px;
+}
+
+.lien {
+  display: block;
+  font-family: "BebasNeue", sans-serif;
+  font-size: 30px;
+  letter-spacing: 1px;
+  color: var(--texte);
+  text-decoration: none;
+  padding: 10px 28px;
+  border-left: 4px solid transparent;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    color 0.2s ease;
+  &:hover {
+    background-color: #f6f6f6;
+    border-left-color: var(--cyan);
   }
-}
-i {
-  display: none;
-}
-
-@media screen and (max-width: 576px) {
-  /* Styles pour les smartphones */
-}
-
-@media screen and (min-width: 576px) and (max-width: 992px) {
-  /* Styles pour les tablettes */
-}
-
-@media screen and (min-width: 992px) and (max-width: 1200px) {
-  /* Styles pour les ordinateurs de bureau */
-}
-
-@media screen and (min-width: 1200px) {
-  /* Styles pour les grands écrans */
-}
-
-@media screen and (-webkit-min-device-pixel-ratio: 2),
-  (min-resolution: 192dpi) {
-  /* Styles pour les écrans haute résolution */
-}
-
-@media screen and (min-width: 1599px) {
-  .menu_icon {
-    display: none !important;
-  }
-
-  .navbar-responsive {
-    display: none !important;
+  &.router-link-exact-active {
+    border-left-color: var(--magenta);
+    color: var(--magenta);
   }
 }
 
-@media screen and (max-width: 1600px) {
-  .logo_text,
-  .logo span,
-  .logo h3,
-  .DIY,
-  .nav-items {
-    display: none;
-  }
+.lien-atelier {
+  color: var(--magenta);
+}
 
-  .menu_icon {
-    display: flex !important;
-    width: 50px;
-    height: 50px;
-    margin-left: auto !important;
-    margin-right: 20px !important;
-    transition: transform 0.3s ease;
-    &:hover {
-      transform: scale(
-        1.2
-      ); /* Augmente légèrement la taille de l'image au survol */
+.voile {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  &.ouvert {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+/* ---------- Ordinateur : panneau qui glisse depuis le côté ---------- */
+@media (min-width: 1025px) {
+  .panneau {
+    position: fixed;
+    top: var(--nav-h);
+    right: 0;
+    bottom: 0;
+    width: 300px;
+    background: #fff;
+    box-shadow: -6px 0 20px rgba(1, 1, 1, 0.12);
+    padding-top: 24px;
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform 0.35s ease, visibility 0.35s;
+    overflow-y: auto;
+    &.ouvert {
+      transform: translateX(0);
+      visibility: visible;
+    }
+  }
+}
+
+/* ---------- Tablette & téléphone : menu déroulant depuis le haut ---------- */
+@media (max-width: 1024px) {
+  .panneau {
+    max-height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    background: #fff;
+    transition: max-height 0.35s ease, visibility 0.35s;
+    &.ouvert {
+      max-height: 340px;
+      visibility: visible;
+      border-top: 1px solid #eee;
+    }
+    ul {
+      padding: 8px 0 16px;
     }
   }
 
-  .logo {
-    margin-top: 0px; /* Réaligne le logo vers le haut de la page */
-  }
-
-  i {
-    display: inline-block; /* Affiche l'icône de menu en mode mobile */
-    margin-left: 10px; /* Ajoute un peu d'espace à gauche de l'icône */
-    cursor: pointer;
-  }
-
-  .nav-items {
-    flex-direction: column; /* Affiche les éléments de navigation verticalement */
-    text-align: center; /* Centre le texte */
-    padding: 0; /* Supprime le rembourrage */
-  }
-
-  .nav-items .a {
-    font-size: 24px; /* Taille de police réduite */
+  .lien {
+    text-align: center;
+    border-left: none;
+    font-size: 26px;
+    padding: 8px 20px;
+    &.router-link-exact-active {
+      background-color: #fdf2f8;
+    }
   }
 }
 
-// Navbar ends
+@media (max-width: 480px) {
+  .logo-texte {
+    height: 22px;
+  }
+  .logo {
+    gap: 8px;
+  }
+}
 </style>

@@ -1,28 +1,29 @@
 <template>
   <NavBar></NavBar>
   <div class="parameters">
-    <div id="message">Fait glisser la souris pour peindre !</div>
+    <div id="message">Clique et fais glisser (ou utilise ton doigt) pour peindre !</div>
     <canvas id="c"></canvas>
   </div>
-  <FooTer></FooTer>
 </template>
       
   <script>
 import NavBar from "./NavBar.vue";
-import FooTer from "./FooTer.vue";
 import * as dat from 'dat.gui';
 
 export default {
   components: {
     NavBar,
-    FooTer,
   },
   data() {
     return {
       showMobileMenu: false,
     };
   },
+  beforeUnmount() {
+    if (this.nettoyer) this.nettoyer();
+  },
   mounted() {
+    const vm = this;
     /**
      * requestAnimationFrame
      */
@@ -347,7 +348,7 @@ export default {
         guiSizeCtr,
         guiIsRandColorCtr;
 
-        var gui = new dat.GUI({ closeButton: false });
+        var gui;
 
       // Event Listeners
 
@@ -467,74 +468,82 @@ export default {
       gui = new dat.GUI({ closeButton: false });
       guiColorCtr = gui
         .addColor(brush, "color")
-        .name("Color")
+        .name("Couleur")
         .onChange(function () {
           control.isRandomColor = false;
           guiIsRandColorCtr.updateDisplay();
         });
-      guiSizeCtr = gui.add(brush, "size", 5, 50).name("Size");
-      gui.add(brush, "inkAmount", 1, 30).name("Ink Amount");
-      gui.add(brush, "splashing").name("Splashing");
-      gui.add(brush, "dripping").name("Dripping");
+      guiSizeCtr = gui.add(brush, "size", 5, 50).name("Taille");
+      gui.add(brush, "inkAmount", 1, 30).name("Quantité d'encre");
+      gui.add(brush, "splashing").name("Éclaboussures");
+      gui.add(brush, "dripping").name("Coulures");
       guiIsRandColorCtr = gui
         .add(control, "isRandomColor")
-        .name("Random Color");
-      gui.add(control, "isRandomSize").name("Random Size");
-      gui.add(control, "clear").name("Clear");
+        .name("Couleur aléatoire");
+      gui.add(control, "isRandomSize").name("Taille aléatoire");
+      gui.add(control, "clear").name("Effacer");
       gui.close();
+      // Traduction du bouton d'ouverture/fermeture de dat.gui
+      var traduireBouton = function () {
+        var b = gui.domElement.querySelector(".close-button");
+        if (b) b.textContent = gui.closed ? "Ouvrir les réglages" : "Fermer les réglages";
+      };
+      traduireBouton();
+      gui.domElement.addEventListener("click", function () {
+        setTimeout(traduireBouton, 0);
+      });
 
       // Start Update
 
+      var idAnimation;
       var loop = function () {
         brush.render(context, mouseX, mouseY);
-        requestAnimationFrame(loop);
+        idAnimation = requestAnimationFrame(loop);
       };
       loop();
+
+      vm.nettoyer = function () {
+        cancelAnimationFrame(idAnimation);
+        window.removeEventListener("resize", resize, false);
+        gui.destroy();
+      };
     })();
   },
 };
 </script>
     
-    <style lang="scss" scoped>
-@font-face {
-  font-family: "BebasNeue";
-  src: url("@/assets/BebasNeue-Regular.woff2") format("woff2"),
-    url("@/assets/BebasNeue-Regular.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "Amarillo";
-  src: url("@/assets/Amarillo.ttf") format("truetype");
-}
-
+<style lang="scss" scoped>
 canvas {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   z-index: 1;
+  touch-action: none;
 }
 
 #message {
-  color: #e2e2de;
-  font-size: 32px;
-  text-align: center;
+  color: #c9c9c4;
+  font-family: "BebasNeue", sans-serif;
+  font-size: clamp(22px, 3vw, 34px);
   letter-spacing: 2px;
+  text-align: center;
   position: fixed;
   top: 50%;
-  z-index: 0;
+  left: 0;
   width: 100%;
+  padding: 0 var(--gouttiere);
   margin-top: -0.5em;
-  text-shadow: 0 -1px 0 #d3d3d1;
+  z-index: 0;
 }
+</style>
 
+<!-- dat.gui est injecté hors du composant : style non scopé -->
+<style lang="scss">
 .dg.ac {
-  z-index: 2;
+  top: var(--nav-h) !important;
+  z-index: 9000 !important;
 }
-
-@media screen and (max-width: 1600px){
-  #message{
-    font-size: 25px;
-  }
+.dg.main .close-button {
+  font-size: 13px;
 }
-
 </style>

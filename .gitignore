@@ -4,8 +4,12 @@ node_modules
 
 
 # local env files
+.env
 .env.local
 .env.*.local
+
+# Généré par scripts/helloasso-adherents.js
+/public/adherents.json
 
 # Log files
 npm-debug.log*

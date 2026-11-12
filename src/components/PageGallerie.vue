@@ -1,27 +1,30 @@
 <template>
-  <NavBar></NavBar>
-  <div id="columns">
-    <figure @click="redirectToPage('/gallerie/artober-2023-p1')">
-      <img src="@/assets/logo_artefrei.png" alt="test" />
-      <figcaption>Art'Ober 2023 - Partie 1</figcaption>
-      <p>📅 | 01/10/2023 ➡ 10/10/2023</p>
-    </figure>
+  <div>
+    <NavBar></NavBar>
+    <h1 class="page-titre">Galerie</h1>
+    <p class="page-sous-titre">
+      Retrouvez les créations des membres d'Art'EFREI, album par album.
+    </p>
 
-    <figure @click="redirectToPage('/gallerie/artober-2023-p2')">
-      <img src="@/assets/logo_artefrei.png" alt="test" />
-      <figcaption>Art'Ober 2023 - Partie 2</figcaption>
-      <p>📅 | 11/10/2023 ➡ 20/10/2023</p>
-    </figure>
+    <ul class="albums">
+      <li v-for="album in albums" :key="album.lien">
+        <RouterLink :to="album.lien" class="album">
+          <div class="couverture" :class="{ logo: !album.photo }">
+            <img :src="album.couverture" :alt="album.titre" loading="lazy" />
+          </div>
+          <div class="album-corps">
+            <h2>{{ album.titre }}</h2>
+            <p>📅 {{ album.dates }}</p>
+            <span class="voir">{{ album.photo ? "Voir l'album →" : "Bientôt disponible" }}</span>
+          </div>
+        </RouterLink>
+      </li>
+    </ul>
 
-    <figure @click="redirectToPage('/gallerie/artober-2023-p3')">
-      <img src="@/assets/logo_artefrei.png" alt="test" />
-      <figcaption>Art'Ober 2023 - Partie 3</figcaption>
-      <p>📅 | 21/10/2023 ➡ 31/10/2023</p>
-    </figure>
+    <FooTer></FooTer>
   </div>
-  <FooTer></FooTer>
 </template>
-    
+
 <script>
 import NavBar from "./NavBar.vue";
 import FooTer from "./FooTer.vue";
@@ -32,177 +35,103 @@ export default {
     FooTer,
   },
   data() {
+    const logo = require("@/assets/logo_artefrei.png");
     return {
-      showMobileMenu: false,
+      albums: [
+        {
+          lien: "/gallerie/artober-2023-p1",
+          titre: "Art'Ober 2023 – Partie 1",
+          dates: "01/10/2023 ➡ 10/10/2023",
+          couverture: require("@/albums/images_albums/artober2023/ART2023_SOPH_D2.jpg"),
+          photo: true,
+        },
+        {
+          lien: "/gallerie/artober-2023-p2",
+          titre: "Art'Ober 2023 – Partie 2",
+          dates: "11/10/2023 ➡ 20/10/2023",
+          couverture: logo,
+          photo: false,
+        },
+        {
+          lien: "/gallerie/artober-2023-p3",
+          titre: "Art'Ober 2023 – Partie 3",
+          dates: "21/10/2023 ➡ 31/10/2023",
+          couverture: logo,
+          photo: false,
+        },
+      ],
     };
-  },
-  methods: {
-    showMenu() {
-      this.showMobileMenu = !this.showMobileMenu;
-    },
-    showSettings() {
-      // Handle the settings click event here
-    },
-    redirectToPage(page) {
-      this.$router.push(page); // Redirection vers la page spécifiée
-    },
   },
 };
 </script>
-  
-  <style lang="scss" scoped>
-@font-face {
-  font-family: "BebasNeue";
-  src: url("@/assets/BebasNeue-Regular.woff2") format("woff2"),
-    url("@/assets/BebasNeue-Regular.ttf") format("truetype");
-}
 
-@font-face {
-  font-family: "Amarillo";
-  src: url("@/assets/Amarillo.ttf") format("truetype");
-}
-
-.search-container {
-  margin-top: 250px;
-  display: flex;
-  align-items: center;
-  justify-content: center; /* Centrer horizontalement */
-  margin-bottom: -100px;
-}
-
-input[type="text"] {
-  padding: 7.5px;
-  border: 1px solid #ccc;
-  border-radius: 5px 0 0 5px;
-  font-size: 20px;
-}
-
-button {
-  padding: 8.5px 20px;
-  background-color: #00adef;
-  color: white;
-  border: none;
-  border-radius: 0 5px 5px 0;
-  cursor: pointer;
-  font-size: 20px;
-}
-
-button:hover {
-  background-color: #00adef;
-}
-
-input[type="text"]:focus {
-  outline: none;
-  border-color: #00adef;
-}
-
-#columns {
+<style lang="scss" scoped>
+.albums {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  width: min(100% - 2 * var(--gouttiere), 1200px);
   display: grid;
-  flex-wrap: wrap;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 90%;
-  max-width: 1100px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 200px;
-  padding: 0 20px;
-  box-sizing: border-box;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
 }
 
-div#columns figure {
-  margin-bottom: 30px; /* Espacement entre les lignes */
-  margin-right: 30px;
-  margin-left: 30px;
-  background-color: #00adef;
-  background-image: linear-gradient(160deg, #00adef 0%, #ffffff 100%);
-  box-shadow: 0 5px 20px rgba(1, 1, 1, 0.2);
-  padding: 15px;
-  padding-bottom: 10px;
-  transition: opacity 0.4s ease-in-out;
-  display: inline-block;
-  border-radius: 20px;
-  margin-bottom: 40px;
-}
-
-div#columns figure img {
-  width: auto;
-  height: 100px;
-  padding-bottom: 15px;
-  margin-left: 88px;
-  margin-right: auto;
-  margin-bottom: 5px;
-}
-
-div#columns figure figcaption {
-  font-size: 28px;
-  color: #000000;
-  background-color: #ffffff;
-  border-radius: 20px;
-  line-height: 1.5;
-  font-family: "BebasNeue", sans-serif;
-  padding: 10px;
-  margin-left: 5px;
-  margin-right: 5px;
-  text-align: center;
-}
-
-div#columns figure p {
-  font-size: 18px;
-  color: #000000;
-  line-height: 1.5;
-  font-family: "BebasNeue", sans-serif;
-  padding: 2px;
-  margin-left: 5px;
-  margin-right: 5px;
-  text-align: left;
-  font-family: "BebasNeue", sans-serif;
-  margin-top: 40px;
-}
-
-div#columns small {
-  font-size: 1rem;
-  float: right;
-  text-transform: uppercase;
-  color: #000000;
-}
-
-div#columns small a {
-  color: #000000;
+.album {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   text-decoration: none;
-  transition: 0.4s color;
-}
-
-figure:hover {
-  cursor: pointer;
-}
-
-div#columns:hover figure:not(:hover) {
-  opacity: 0.4;
-}
-
-@media screen and (max-width: 1600px) {
-  #columns {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    margin-left: auto !important;
-    margin-right: auto !important;
+  color: var(--texte);
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--ombre);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 28px rgba(1, 1, 1, 0.2);
   }
-  #columns figure {
+}
+
+.couverture {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  img {
     width: 100%;
-  }
-  div#columns figure {
-    margin-left: -20px;
-    flex-basis: calc(
-      100% - 20px
-    ); /* Sur un écran étroit, chaque figure occupe toute la largeur */
-  }
-
-  div#columns figure img {
+    height: 100%;
+    object-fit: cover;
     display: block;
-    margin-left: auto;
-    margin-right: auto;
   }
+  &.logo {
+    background: linear-gradient(160deg, var(--cyan) 0%, #ffffff 100%);
+    display: grid;
+    place-items: center;
+    img {
+      width: 55%;
+      height: auto;
+      object-fit: contain;
+    }
+  }
+}
+
+.album-corps {
+  padding: 16px 20px 20px;
+  h2 {
+    font-family: "BebasNeue", sans-serif;
+    font-weight: normal;
+    font-size: 28px;
+    letter-spacing: 1px;
+    margin: 0;
+  }
+  p {
+    margin: 4px 0 12px;
+    color: var(--texte-doux);
+  }
+}
+
+.voir {
+  font-weight: 600;
+  color: var(--magenta);
 }
 </style>

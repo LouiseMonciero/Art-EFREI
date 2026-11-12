@@ -2,10 +2,12 @@
   <div :class="{ 'fade-in': isPageLoaded }">
     <router-view />
     <button
-      onclick="window.scrollTo({top: 0, left: 0, behavior: 'smooth'});"
+      v-show="showBackToTop"
       id="backtotop"
+      aria-label="Retour en haut de la page"
+      @click="scrollToTop"
     >
-      <img src="@/assets/arrow.png" />
+      <img src="@/assets/arrow.png" alt="" />
     </button>
   </div>
 </template>
@@ -15,38 +17,113 @@ export default {
   data() {
     return {
       isPageLoaded: false,
+      showBackToTop: false,
     };
   },
   mounted() {
-    // Après le chargement initial de la page
     this.isPageLoaded = true;
-    // When the user scrolls down 20px from the top of the document, show the button
-    window.onscroll = function () {
-      scrollFunction();
-    };
-
-    function scrollFunction() {
-      if (
-        document.body.scrollTop > 20 ||
-        document.documentElement.scrollTop > 20
-      ) {
-        document.getElementById("backtotop").style.display = "block";
-      } else {
-        document.getElementById("backtotop").style.display = "none";
-      }
-    }
+    window.addEventListener("scroll", this.onScroll, { passive: true });
+  },
+  beforeUnmount() {
+    window.removeEventListener("scroll", this.onScroll);
+  },
+  methods: {
+    onScroll() {
+      this.showBackToTop = window.scrollY > 200;
+    },
+    scrollToTop() {
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    },
   },
   watch: {
     $route() {
-      // Lorsque la route change
       this.isPageLoaded = false;
       setTimeout(() => {
         this.isPageLoaded = true;
-      }, 20); // Ajoutez un délai si nécessaire pour déclencher l'animation
+      }, 20);
     },
   },
 };
 </script>
+
+<!-- Styles globaux (non scopés) partagés par toutes les pages -->
+<style lang="scss">
+@font-face {
+  font-family: "BebasNeue";
+  src: url("@/assets/BebasNeue-Regular.woff2") format("woff2"),
+    url("@/assets/BebasNeue-Regular.ttf") format("truetype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Amarillo";
+  src: url("@/assets/Amarillo.ttf") format("truetype");
+  font-display: swap;
+}
+
+:root {
+  --cyan: #00adef;
+  --magenta: #ec008b;
+  --jaune: #fef200;
+  --texte: #1d1d1f;
+  --texte-doux: #4a4a4f;
+  --ombre: 0 5px 20px rgba(1, 1, 1, 0.15);
+  --nav-h: 76px;
+  --gouttiere: clamp(16px, 4vw, 48px);
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --nav-h: 64px;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto,
+    sans-serif;
+  color: var(--texte);
+  background: #fff;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* Titre de page commun */
+.page-titre {
+  font-family: "BebasNeue", sans-serif;
+  font-size: clamp(32px, 6vw, 56px);
+  line-height: 1.1;
+  text-align: center;
+  margin: 40px var(--gouttiere) 8px;
+  letter-spacing: 1px;
+  span {
+    background-color: var(--jaune);
+    padding: 0 6px;
+  }
+}
+
+.page-sous-titre {
+  font-family: "Inter", sans-serif;
+  text-align: center;
+  color: var(--texte-doux);
+  margin: 0 var(--gouttiere) 32px;
+  font-size: clamp(15px, 2vw, 18px);
+}
+</style>
 
 <style lang="scss" scoped>
 @keyframes fadeIn {
@@ -63,19 +140,20 @@ export default {
 }
 
 #backtotop {
-  display: none;
   position: fixed;
-  bottom: 50px;
-  right: 30px;
-  z-index: 99;
-  font-size: 18px;
-  outline: none;
-  background-color: #00adef;
-  border-radius: 100px;
+  bottom: 24px;
+  right: 20px;
+  z-index: 998;
+  background-color: var(--cyan);
+  border-radius: 50%;
   border: none;
   cursor: pointer;
-  padding: 15px;
-  user-select: none;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  box-shadow: var(--ombre);
+  transition: background-color 0.2s ease;
 }
 
 #backtotop img {
@@ -84,7 +162,6 @@ export default {
 }
 
 #backtotop:hover {
-  background-color: #ec008b;
-  color: #000000;
+  background-color: var(--magenta);
 }
 </style>
